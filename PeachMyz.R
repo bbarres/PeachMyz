@@ -30,15 +30,27 @@ sum(table(MyzPeach$patch_ID)) #312 individuals
 #the entire dataset
 JDD<-MyzPeach #name of the input file
 JDD<-drop.levels(JDD)
+#let's define a set of color for keeping some consistency in the plots
+coloor<-c("red","green","blue","yellow","orchid")
+
+
+###############################################################################
+###############################################################################
+#DAPC on microsatellites only
+###############################################################################
+###############################################################################
 
 #converting data to a genind format, first we use only the microsatellite data
-JDDmicro<-df2genind(JDD[,c("MP27","MP39","MP44","MP5","MP7","MP23","MP45",
-                         "MP28","MP9","MP13","MP2","MP38","MP4","MP46")],
+JDDmicro<-df2genind(JDD[,c("MP_27","MP_39","MP_44","MP_5","MP_7","MP_23",
+                           "MP_45","MP_28","MP_9","MP_13","MP_2","MP_38",
+                           "MP_4","MP_46")],
                   ncode=6,ind.names=JDD$sample_ID, 
                   pop=JDD$patch_ID,missing=NA,ploidy=2)
 #include the coordinates of the samples
 JDDmicro@other$xy<-JDD[,c("longitude","latitude")]
 
+#now we analyse the adegenet format dataset with dapc
+JDDade<-JDDmicro
 #determination of the number of clusters
 clustJDDade<- find.clusters(JDDade,max.n.clust=35)
 #with 40 PCs, we lost nearly no information
@@ -51,16 +63,67 @@ dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=5,n.pca=100)
 temp<-optim.a.score(dapcJDDade)
 dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=5,n.pca=30)
 temp<-optim.a.score(dapcJDDade)
-dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=5,n.pca=7)
+dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=4,n.pca=10)
 #STRUCTURE-like graphic
-compoplot(dapcJDDade,lab=NA)
-scatter(dapcJDDade,xax=1, yax=2)
-
-coloor<-c("red","green","blue","orange")
+compoplot(dapcJDDade,lab=truenames(JDDade)$pop,legend=FALSE,
+          cex.names=0.3,cex.lab=0.5,cex.axis=0.5,col=coloor)
+#scatter plot
+scatter(dapcJDDade,xax=1, yax=2,col=coloor)
+#a more beautifull scatter plot
 scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
         solid=0.3,pch=19,cex=3,scree.da=TRUE)
 
-#scatter plot with the different K groups and then plotting the sampling host
+
+###############################################################################
+###############################################################################
+#DAPC on microsatellites and resistance genotypes
+###############################################################################
+###############################################################################
+
+#converting data to a genind format, first we use only the microsatellite data
+JDDall<-df2genind(JDD[,c("MP_27","MP_39","MP_44","MP_5","MP_7","MP_23",
+                           "MP_45","MP_28","MP_9","MP_13","MP_2","MP_38",
+                           "MP_4","MP_46","kdr","skdr","R81T","MACE")],
+                    ncode=6,ind.names=JDD$sample_ID, 
+                    pop=JDD$patch_ID,missing=NA,ploidy=2)
+#include the coordinates of the samples
+JDDall@other$xy<-JDD[,c("longitude","latitude")]
+
+#now we analyse the adegenet format dataset with dapc
+JDDade<-JDDall
+#determination of the number of clusters
+clustJDDade<- find.clusters(JDDade,max.n.clust=35)
+#with 40 PCs, we lost nearly no information
+clustJDDade<- find.clusters(JDDade,n.pca=40,max.n.clust=35) #chose 4 clusters
+#which individuals in which clusters per population
+table(pop(JDDade),clustJDDade$grp)
+#DAPC by itself, first we try to optimized the number of principal component (PCs) 
+#to retain to perform the analysis
+dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=5,n.pca=100)
+temp<-optim.a.score(dapcJDDade)
+dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=5,n.pca=30)
+temp<-optim.a.score(dapcJDDade)
+dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=4,n.pca=7)
+#STRUCTURE-like graphic
+compoplot(dapcJDDade,lab=truenames(JDDade)$pop,legend=FALSE,
+          cex.names=0.3,cex.lab=0.5,cex.axis=0.5,col=coloor)
+#scatter plot
+scatter(dapcJDDade,xax=1, yax=2,col=coloor)
+#a more beautifull scatter plot
+scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
+        solid=0.3,pch=19,cex=3,scree.da=TRUE)
+
+
+
+
+
+###############################################################################
+###############################################################################
+#trash
+###############################################################################
+###############################################################################
+
+#scatter plot with the different K groups and then plotting the population
 scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
         solid=0.3,pch=19,cex=3,scree.da=FALSE)
 #oilseed_rape
