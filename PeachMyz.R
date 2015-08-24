@@ -1,6 +1,6 @@
 ###############################################################################
 ###############################################################################
-#Script for the analyses of Myzus population sampled on peach trees
+#Script for the analyses of Myzus populations sampled on peach trees
 ###############################################################################
 ###############################################################################
 
@@ -35,9 +35,7 @@ coloor<-c("red","green","blue","yellow","orchid")
 
 
 ###############################################################################
-###############################################################################
 #DAPC on microsatellites only
-###############################################################################
 ###############################################################################
 
 #converting data to a genind format, first we use only the microsatellite data
@@ -57,8 +55,8 @@ clustJDDade<- find.clusters(JDDade,max.n.clust=35)
 clustJDDade<- find.clusters(JDDade,n.pca=40,max.n.clust=35) #chose 4 clusters
 #which individuals in which clusters per population
 table(pop(JDDade),clustJDDade$grp)
-#DAPC by itself, first we try to optimized the number of principal component (PCs) 
-#to retain to perform the analysis
+#DAPC by itself, first we try to optimized the number of principal component 
+#(PCs) to retain to perform the analysis
 dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=5,n.pca=100)
 temp<-optim.a.score(dapcJDDade)
 dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=5,n.pca=30)
@@ -75,9 +73,7 @@ scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
 
 
 ###############################################################################
-###############################################################################
 #DAPC on microsatellites and resistance genotypes
-###############################################################################
 ###############################################################################
 
 #converting data to a genind format, first we use only the microsatellite data
@@ -97,8 +93,8 @@ clustJDDade<- find.clusters(JDDade,max.n.clust=35)
 clustJDDade<- find.clusters(JDDade,n.pca=40,max.n.clust=35) #chose 4 clusters
 #which individuals in which clusters per population
 table(pop(JDDade),clustJDDade$grp)
-#DAPC by itself, first we try to optimized the number of principal component (PCs) 
-#to retain to perform the analysis
+#DAPC by itself, first we try to optimized the number of principal component 
+#(PCs) to retain to perform the analysis
 dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=5,n.pca=100)
 temp<-optim.a.score(dapcJDDade)
 dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=5,n.pca=30)
@@ -117,10 +113,9 @@ scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
 
 
 
-###############################################################################
+
 ###############################################################################
 #trash
-###############################################################################
 ###############################################################################
 
 #scatter plot with the different K groups and then plotting the population
@@ -170,3 +165,6 @@ plot(JDDade@other$xy,cex=3,col=dapcJDDade$assign,pch=as.numeric(as.factor(JDDade
 
 
 
+###############################################################################
+#END
+###############################################################################
